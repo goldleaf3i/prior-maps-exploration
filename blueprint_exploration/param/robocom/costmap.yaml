@@ -1,0 +1,38 @@
+global_frame: /map
+robot_base_frame: laser_base
+update_frequency: 20.0
+publish_frequency: 10.0
+
+#set if you want the voxel map published
+publish_voxel_map: false
+
+#set to true if you want to initialize the costmap from a static map
+static_map: false
+
+#begin - COMMENT these lines if you set static_map to true
+rolling_window: true
+width: 6.0
+height: 6.0
+resolution: 0.02
+#end - COMMENT these lines if you set static_map to true
+
+map_type: costmap
+track_unknown_space: true
+
+transform_tolerance: 5.0
+obstacle_range: 5.0
+min_obstacle_height: 0.30
+max_obstacle_height: 1.00
+raytrace_range: 18.0
+
+footprint: [ [0.22, 0.28], [-0.03, 0.28], [-0.03, 0.20], [-0.43, 0.20], [-0.43, -0.20], [-0.03, -0.20], [-0.03, -0.28], [0.22, -0.28]] #[ [-0.40,-0.30], [-0.40, 0.30], [0.2, 0.30], [0.2, -0.30] ]
+footprint_padding: 0.01
+
+#robot_radius: 0.35
+inflation_radius: 0.50
+cost_scaling_factor: 10.0
+lethal_cost_threshold: 100.0
+observation_sources: 
+  scan
+scan: {data_type: LaserScan, expected_update_rate: 50.0,
+  observation_persistence: 0.0, marking: true, clearing: true, max_obstacle_height: 1.00, min_obstacle_height: 0.3}

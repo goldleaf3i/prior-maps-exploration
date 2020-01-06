@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+ 
+<robot name="camera1" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<link name="world" />
+
+
+ <gazebo>
+    <static>true</static>
+</gazebo>
+
+ <xacro:include filename="$(find turtlebot_description)/urdf/common_properties.urdf.xacro"/>
+  <xacro:include filename="$(find blueprint_exploration)/robots/kobuki/camera_properties.urdf.xacro"/>
+   <!-- 3D Sensors -->
+  <xacro:include filename="$(find turtlebot_description)/urdf/sensors/kinect.urdf.xacro"/>
+  <xacro:include filename="$(find blueprint_exploration)/robots/kobuki/asus_xtion_pro.urdf.xacro"/>
+  
+  <kobuki/>
+  
+  <sensor_asus_xtion_pro  parent="world"/>
+</robot>

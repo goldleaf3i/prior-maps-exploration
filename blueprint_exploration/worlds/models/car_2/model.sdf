@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="car">
+  <pose>0 0 0 1.571 0 0</pose>
+  <static>true</static>
+    <link name="link">
+      <gravity>false</gravity>
+      <collision name="collision">
+        <geometry>
+         <box>
+            <size>4.5 4 2</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://car_2/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

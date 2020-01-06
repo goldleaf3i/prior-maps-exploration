@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+    - Base      : kobuki
+    - Stacks    : hexagons
+    - 3d Sensor : kinect
+-->    
+<robot name="turtlebot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <xacro:include filename="$(find turtlebot_description)/urdf/common_properties.urdf.xacro"/>
+  <xacro:include filename="$(find blueprint_exploration)/robots/kobuki/camera_properties.urdf.xacro"/>
+  <!-- Bases -->
+  <xacro:include filename="$(find create_description)/urdf/create.urdf.xacro"/>
+  <xacro:include filename="$(find kobuki_description)/urdf/kobuki.urdf.xacro" />
+  <!-- Stacks -->
+  <xacro:include filename="$(find turtlebot_description)/urdf/stacks/circles.urdf.xacro"/>
+  <xacro:include filename="$(find turtlebot_description)/urdf/stacks/hexagons.urdf.xacro"/>
+  <!-- Flir_PTU -->
+  <!--<xacro:include filename="$(find watermellon)/robots/kobuki/flir_ptu.urdf.xacro"/>-->
+  <!-- 3D Sensors -->
+  <xacro:include filename="$(find turtlebot_description)/urdf/sensors/kinect.urdf.xacro"/>
+  <xacro:include filename="$(find blueprint_exploration)/robots/kobuki/asus_xtion_pro.urdf.xacro"/>
+  <xacro:include filename="$(find blueprint_exploration)/robots/kobuki/hokuyo.urdf.xacro"/>
+  <kobuki/>
+  
+  <!--<flir 				  parent="base_link"/>-->
+  <stack_hexagons         parent="base_link"/>
+  <!--<sensor_asus_xtion_pro  parent="ptu_mount_link"/>-->
+  <sensor_asus_xtion_pro  parent="base_link"/>
+</robot>

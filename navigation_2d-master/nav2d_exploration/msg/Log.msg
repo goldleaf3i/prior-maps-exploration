@@ -1,0 +1,9 @@
+float64 time
+float32 travelled_distance
+float32 frontier_distance
+float32 frontier_information_gain_floorplan
+float32 frontier_information_gain_no_floorplan
+float32 frontier_utility
+float32 alpha
+float32 coverage_percentage
+string frontier_information_gain_mode

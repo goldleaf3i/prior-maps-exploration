@@ -1,0 +1,85 @@
+<launch>
+	<!-- Main parameters -->
+	<arg name="gazebo_gui" value="false" />
+	<arg name="gazebo_world_name" value="$(find blueprint_exploration)/worlds/basic_no_furniture.world" />
+	<arg name="initial_pos_X" value="3" />
+	<arg name="initial_pos_Y" value="2" />
+	<arg name="coverage_map" value="$(find blueprint_exploration)/worlds/maps/basic_no_furniture.yaml" />
+
+	<rosparam file="$(find blueprint_exploration)/param/turtlebot/ros_gmapping.yaml"/>
+
+	<!-- Start Gazebo simulator -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="use_sim_time" value="true"/>
+		<arg name="debug" value="true"/>
+		<arg name="verbose" value="false"/>
+		<arg name="gui" value="$(arg gazebo_gui)" />
+   		<arg name="world_name" value="$(arg gazebo_world_name)"/>
+  	</include> 
+
+	<arg name="urdf_file" value="$(find xacro)/xacro '$(find blueprint_exploration)/robots/kobuki/LASER_10M/kobuki_hexagons_hokuyo.urdf.xacro'" />
+  	<param name="robot_description"
+        	command="$(arg urdf_file)" />
+  	<node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model"
+        	args="-unpause -urdf -param robot_description -x $(arg initial_pos_X) -y $(arg initial_pos_Y) -model mobile_base"/>
+
+	<!-- Velocity muxer -->
+	<node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+	<node pkg="nodelet" type="nodelet" name="cmd_vel_mux"
+		args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+		<param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml" />
+		<remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
+	</node>
+
+	<arg name="use_tf_static" default="false"/> 
+	<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+		<param name="publish_frequency" type="double" value="30.0" />
+		<param name="use_tf_static" value="$(arg use_tf_static)"/>
+	</node>
+
+	<!-- Start the map server to convert png to occupancy grid -->
+	<node name="blueprint_map_server" pkg="map_server" type="map_server" args="$(find blueprint_exploration)/param/turtlebot/blueprint_map_server_basic_bounding_box.yaml">
+		<remap from="map" to="blueprint_map_server/map" />
+		<remap from="map_metadata" to="blueprint_map_server/map_metadata" />
+		<remap from="static_map" to="blueprint_map_server/static_map" />
+	</node>
+
+	<!-- Start the map server for computing coverage percentage -->
+	<node name="blueprint_map_server_coverage" pkg="map_server" type="map_server" args="$(arg coverage_map)">
+		<remap from="map" to="blueprint_map_server_coverage/map" />
+		<remap from="map_metadata" to="blueprint_map_server_coverage/map_metadata" />
+		<remap from="static_map" to="blueprint_map_server_coverage/static_map" />
+	</node>
+
+
+	<!-- Start the Operator to control the simulated robot -->
+	<node name="Operator" pkg="nav2d_operator" type="operator" >
+		<remap from="cmd_vel" to="cmd_vel_mux/input/teleop" />
+		<rosparam file="$(find blueprint_exploration)/param/turtlebot/operator.yaml"/>
+		<rosparam file="$(find blueprint_exploration)/param/turtlebot/costmap.yaml" ns="local_map" />
+	</node>
+
+	<!-- Start the Navigator to move the robot autonomously -->
+	<node name="Navigator" pkg="nav2d_navigator" type="navigator">
+		<rosparam file="$(find blueprint_exploration)/param/turtlebot/navigator_basic.yaml"/>
+	</node> 
+
+	<node name="GetMap" pkg="nav2d_navigator" type="get_map_client" />
+	
+	<node name="Explore" pkg="nav2d_navigator" type="explore_client" /> 
+
+	<node name="SetGoal" pkg="nav2d_navigator" type="set_goal_client" />
+
+	
+	<!-- RVIZ to view the visualization  old -->
+	<node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find blueprint_exploration)/rviz/config.rviz"/> 
+
+	<!-- Gmapping -->
+	<arg name="custom_gmapping_launch_file" default="$(find blueprint_exploration)/launch/includes/gmapping_basic.launch.xml"/>
+	<include file="$(arg custom_gmapping_launch_file)"/> 
+
+	<!-- Logger -->
+	
+	<node pkg="nav2d_exploration" name="logger" type="logger.py"/> 
+	
+</launch>

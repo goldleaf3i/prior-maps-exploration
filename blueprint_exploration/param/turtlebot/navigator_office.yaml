@@ -1,0 +1,41 @@
+# Inflation params used for path planning 0.5 0.25
+map_inflation_radius: 1.0
+robot_radius: 0.25
+
+# Tolerance in target position for MoveToPosition2D (meter)
+navigation_goal_distance: 1.0
+
+# Toleranvce in target heading for MoveToPosition2D (radians)
+navigation_goal_angle: 1.0
+
+# Distance at which to turn off obstacle avoidance (meter)
+navigation_homing_distance: 0.0
+
+# Find new exploartion target when in range of current one (meter)
+exploration_goal_distance: 3.0
+
+# Strategy MinPos
+min_target_area_size: 1.0
+visualize_frontiers: true
+
+#Default NearestFrontierPlanner
+exploration_strategy: BlueprintExploration
+
+min_replanning_period: 3.0
+max_replanning_period: 1.0
+
+##Strategy BlueprintExploration
+floorplan_map_topic: blueprint_map_server/map
+frontier_distance_mode: middle_point #values nearest_point, middle_point
+lethal_cost: 60 #25
+lethal_cost_floorplan: 80
+alpha: 0.5
+information_gain:  floorplan #floorplan #values floorplan, no_floorplan
+max_laser_range: 25.0
+laser_resolution: 1.0
+publish_goal_to_move_base: false
+
+#Compute Coverage Percentage
+complete_map_topic: blueprint_map_server_coverage/map
+
+
